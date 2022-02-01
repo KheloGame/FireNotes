@@ -12,6 +12,8 @@
     <color name="textMain">#171717</color>
     <color name="textAlt">#292929</color>
 
+    <color name="dbText">#d0d0d0</color>
+
     <color name="textInvMain">#ffffff</color>
     <color name="textInvAlt">#d0d0d0</color>
 

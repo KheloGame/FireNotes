@@ -44,7 +44,7 @@
         android:gravity="start|top"
         android:hint="Write Your Note Here"
         android:inputType="textMultiLine"
-        android:textColor="@color/textInvAlt"
+        android:textColor="@color/textMain"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

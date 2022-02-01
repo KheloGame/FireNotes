@@ -2,15 +2,17 @@ package com.example.firenotes;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
@@ -54,8 +58,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
     RecyclerView noteLists;
-    Adapter adapter;
     FirebaseFirestore fStore;
+    SaveState saveState;
+    SwitchCompat switchid;
     FirestoreRecyclerAdapter<Note, NoteViewHolder> noteAdapter;
     FirebaseUser user;
     FirebaseAuth fAuth;
@@ -66,6 +71,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        saveState = new SaveState(this);
+        if (saveState.getState() == true){
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else {
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        switchid = findViewById(R.id.switchid);
+
+        if (saveState.getState() == true){
+            switchid.setChecked(true);
+        }
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
@@ -211,6 +230,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.logout:
                 checkUser();
                 break;
+
+            case R.id.theme:
+                Toast.makeText(MainActivity.this, "Theme Clicked", Toast.LENGTH_SHORT).show();
+
+            case R.id.switchid:
+                switchid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if (isChecked){
+                            saveState.setState(true);
+                            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        }
+                        else {
+                            saveState.setState(true);
+                            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        }
+                    }
+                });
         }
         return false;
     }
@@ -253,19 +290,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         warning.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.settings){
-            Toast.makeText(this, "Settings Menu is Clicked", Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder{
         TextView noteTitle, noteContent;
@@ -299,6 +323,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int number = randomColour.nextInt(colourCode.size());
         return colourCode.get(number);
     }
+
+
+    public void changeTheme(){
+        switchid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    saveState.setState(true);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                else {
+                    saveState.setState(false);
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onStart() {
