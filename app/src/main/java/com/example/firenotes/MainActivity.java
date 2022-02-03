@@ -3,6 +3,7 @@ package com.example.firenotes;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView nav_view;
     RecyclerView noteLists;
     FirebaseFirestore fStore;
-    SaveState saveState;
-    SwitchCompat switchid;
     FirestoreRecyclerAdapter<Note, NoteViewHolder> noteAdapter;
     FirebaseUser user;
     FirebaseAuth fAuth;
@@ -71,26 +71,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        saveState = new SaveState(this);
-        if (saveState.getState() == true){
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        else {
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
-        switchid = findViewById(R.id.switchid);
-
-        if (saveState.getState() == true){
-            switchid.setChecked(true);
-        }
 
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
 
         Query query = fStore.collection("notes").document(user.getUid()).collection("myNotes").orderBy("title", Query.Direction.DESCENDING);
+
         // Query notes > uid > mynotes
 
         FirestoreRecyclerOptions<Note> allNotes = new FirestoreRecyclerOptions.Builder<Note>()
@@ -230,24 +219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.logout:
                 checkUser();
                 break;
-
-            case R.id.theme:
-                Toast.makeText(MainActivity.this, "Theme Clicked", Toast.LENGTH_SHORT).show();
-
-            case R.id.switchid:
-                switchid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                        if (isChecked){
-                            saveState.setState(true);
-                            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        }
-                        else {
-                            saveState.setState(true);
-                            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        }
-                    }
-                });
         }
         return false;
     }
@@ -325,23 +296,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void changeTheme(){
-        switchid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
-                    saveState.setState(true);
-                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                else {
-                    saveState.setState(false);
-                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-            }
-        });
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -355,4 +309,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             noteAdapter.stopListening();
         }
     }
+
 }

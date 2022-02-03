@@ -36,7 +36,7 @@ public class EditNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar) ;
+        setSupportActionBar(toolbar);
 
         fStore = FirebaseFirestore.getInstance();
         spinner = findViewById(R.id.progressBar2);

@@ -14,8 +14,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:title="FireNotes"/>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FireNotes"
+            android:layout_gravity="center"
+            android:fontFamily="@font/sfprodisplay_regular"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/textInvMain"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteList"
